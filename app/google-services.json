@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "416813692627",
+    "project_id": "login-register-bb406",
+    "storage_bucket": "login-register-bb406.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416813692627:android:0b1ef813e11ddd0518c626",
+        "android_client_info": {
+          "package_name": "com.example.gimnasioforce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlGvZaYNKVogutGy13CgGObqx3h7IfT4w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
