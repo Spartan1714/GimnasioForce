@@ -19,21 +19,15 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView stepsTextView;
     private TextView distanceTextView;
-    float previousX = 0f;
+    private float previousX = 0f;
 
     private SensorManager sensorManager;
     private Sensor stepSensor;
 
     private int stepsCount = 0;
-    boolean running = false;
-    final float ACCELEROMETER_THREHOLD = 10f;
+    private boolean running = false;
+    final float ACCELEROMETER_THRESHOLD = 10f;
     private float distanceCovered = 0;
-    private Handler handler;
-    private Runnable updateStepsRunnable;
-
-    Button star;
-    Button stop;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +35,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         stepsTextView = findViewById(R.id.stepsTextView);
-        star=findViewById(R.id.startButton);
-        stop=findViewById(R.id.stopButton);
-
+        distanceTextView = findViewById(R.id.distanceTextView);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-
-        star.setOnClickListener(new View.OnClickListener() {
+        Button startButton = findViewById(R.id.startButton);
+        startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 stepsCount = 0;
@@ -57,85 +49,56 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        stop.setOnClickListener(new View.OnClickListener() {
+        Button stopButton = findViewById(R.id.stopButton);
+        stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 running = false;
             }
         });
-
-
-
-        //@Override
-    /*public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            if (event.values.length > 0) {
-                stepsCount = (int) event.values[0];
-            } else {
-                // No se recibieron datos del sensorXX
-                stepsTextView.setText("Pasos" + stepsCount);
-                return;
-            }
-
-            // Calcular distancia aproximada (cada paso es aproximadamente 0.7 metros)
-            distanceCovered = stepsCount * 0.7f;
-            distanceTextView.setText("Distancia recorrida: " + distanceCovered + " metros");
-            showAlert(String.valueOf(stepsCount));
-        }
-        {
-            handler = new Handler();
-            updateStepsRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    // Actualizar el TextView con los pasos contados
-                    stepsTextView.setText("Pasos: " + stepsCount);
-                    // Programar la actualización periódica cada segundo (1000 milisegundos)
-                    handler.postDelayed(this, 1000);
-                }
-            };
-        }
-    }*/
-
-
-
-
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         sensorManager.registerListener(sensorListener, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        running = true;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (stepSensor != null) {
-            sensorManager.unregisterListener(sensorListener);
-        }
+        sensorManager.unregisterListener(sensorListener);
     }
-    final SensorEventListener sensorListener = new SensorEventListener() {
+
+    private final SensorEventListener sensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             if (running) {
                 float x = event.values[0];
-                float y = event.values[1];
-                float z = event.values[2];
-
-                float deltaX = x - previousX;
-                if (deltaX > ACCELEROMETER_THREHOLD) {
+                float deltaX = Math.abs(x - previousX);
+                if (deltaX > ACCELEROMETER_THRESHOLD) {
                     stepsCount++;
-                    stepsTextView.setText("Pasos: " + stepsCount);
+                    stepsTextView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            stepsTextView.setText("Pasos: " + stepsCount);
+                        }
+                    });
                 }
                 distanceCovered = stepsCount * 0.7f;
-                distanceTextView.setText("Distancia recorrida: " + distanceCovered + " metros");
+                distanceTextView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        distanceTextView.setText("Distancia recorrida: " + distanceCovered + " metros");
+                    }
+                });
+                previousX = x;
             }
         }
 
-
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+            // Ignorar para este ejemplo
         }
     };
 }
