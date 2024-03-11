@@ -41,10 +41,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         stepsTextView = findViewById(R.id.stepsTextView);
-        distanceTextView = findViewById(R.id.distanceTextView);
         star=findViewById(R.id.startButton);
         stop=findViewById(R.id.stopButton);
-        stepsTextView.setText("Pasos: " + stepsCount);
+
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
